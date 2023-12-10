@@ -1,6 +1,6 @@
 <?php 
-if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 2){
-    $qry = $conn->query("SELECT * FROM `client_list` where id = '{$_settings->userdata('id')}'");
+if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 3){
+    $qry = $conn->query("SELECT * FROM `cab_list` where id = '{$_settings->userdata('id')}'");
     if($qry->num_rows >0){
         $res = $qry->fetch_array();
         foreach($res as $k => $v){
@@ -27,7 +27,7 @@ if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 2){
     <div class="container">
         <div class="card card-outline card-purple shadow rounded-0">
             <div class="card-header">
-                <h4 class="card-title"><b>Manage Account Details/Credentials</b></h4>
+                <h4 class="card-title"><b>Manage Account Details</b></h4>
             </div>
             <div class="card-body">
                 <div class="container-fluid">
@@ -35,44 +35,24 @@ if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 2){
                         <input type="hidden" name="id" value="<?= isset($id) ? $id : "" ?>">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <input type="text" name="firstname" id="firstname" placeholder="Enter First Name" autofocus class="form-control form-control-sm form-control-border" value="<?= isset($firstname) ? $firstname : "" ?>" required>
-                                <small class="ml-3">First Name</small>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" name="middlename" id="middlename" placeholder="Enter Middle Name (optional)" class="form-control form-control-sm form-control-border" value="<?= isset($middlename) ? $middlename : "" ?>">
-                                <small class="ml-3">Middle Name</small>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" name="lastname" id="lastname" placeholder="Enter Last Name" class="form-control form-control-sm form-control-border" required value="<?= isset($lastname) ? $lastname : "" ?>">
-                                <small class="ml-3">Last Name</small>
+                                <input type="text" name="cab_driver" id="cab_driver" placeholder="Enter Fullname Name" autofocus class="form-control form-control-sm form-control-border" value="<?= isset($cab_driver) ? $cab_driver : "" ?>" required>
+                                <small class="ml-3">Fullname</small>
                             </div>
                         </div>
                         <div class="row">
+                           
                             <div class="form-group col-md-6">
-                                <select name="gender" id="gender" class="custom-select custom-select-sm form-control-border" required>
-                                    <option <?= isset($gender) && $gender == 'Male' ? "selected" : "" ?>>Male</option>
-                                    <option <?= isset($gender) && $gender == 'Female' ? "selected" : "" ?>>Female</option>
-                                </select>
-                                <small class="ml-3">Gender</small>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" name="contact" id="contact" placeholder="Enter Contact #" class="form-control form-control-sm form-control-border" required value="<?= isset($contact) ? $contact : "" ?>">
+                                <input type="text" name="driver_contact" id="driver_contact" placeholder="Enter Contact #" class="form-control form-control-sm form-control-border" required value="<?= isset($driver_contact) ? $driver_contact : "" ?>">
                                 <small class="ml-3">Contact #</small>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-12">
                             <small class="ml-3">Address</small>
-                            <textarea name="address" id="address" rows="3" class="form-control form-control-sm rounded-0" placeholder="Block 6 Lot 23, Here Subd., There City, Anywhere, 2306"><?= isset($address) ? $address : "" ?></textarea>
+                            <textarea name="driver_address" id="driver_address" rows="3" class="form-control form-control-sm rounded-0" placeholder="Block 6 Lot 23, Here Subd., There City, Anywhere, 2306"><?= isset($driver_address) ? $driver_address : "" ?></textarea>
                             </div>
                         </div>
                         <hr>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <input type="email" name="email" id="email" placeholder="jsmith@sample.com" class="form-control form-control-sm form-control-border" required value="<?= isset($email) ? $email : "" ?>">
-                                <small class="ml-3">Email</small>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="form-group col-md-6">
                                 <div class="input-group">
@@ -92,7 +72,7 @@ if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 2){
                                 </div>
                                 <small class="ml-3">Confirm New Password</small>
                             </div>
-                            <div class="col-12"><small class="text-muted"><em>Fill the password fields above only if you want to update your password.</em></small></div>
+                            <div class="col-12 mb-3"><small class="text-muted"><em>Fill the password fields above only if you want to update your password.</em></small></div>
                         </div>
                         <div class="row">
                             <div class="form-group col-md-6">
@@ -124,7 +104,7 @@ if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 2){
                             </div>
                             <!-- /.col -->
                             <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-sm btn-flat btn-block">Update Details</button>
+                            <button type="submit" class="btn btn-success btn-sm btn-flat btn-block">Update Details</button>
                             </div>
                             <!-- /.col -->
                         </div>
@@ -178,7 +158,7 @@ if($_settings->userdata('id') > 0 && $_settings->userdata('login_type') == 2){
             }
             start_loader();
             $.ajax({
-                url:_base_url_+"classes/Users.php?f=save_client",
+                url:_base_url_+"classes/Master.php?f=save_cab",
                 data: new FormData($(this)[0]),
                 cache: false,
                 contentType: false,

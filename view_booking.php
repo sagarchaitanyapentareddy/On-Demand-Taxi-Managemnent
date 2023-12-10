@@ -1,5 +1,5 @@
 <?php
-require_once('./config.php');
+require_once('./../config.php');
 if(isset($_GET['id']) && $_GET['id'] > 0){
     $qry = $conn->query("SELECT * from `booking_list` where id = '{$_GET['id']}' ");
     if($qry->num_rows > 0){
@@ -42,7 +42,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     <dd class="pl-4"><?= isset($driver_address) ? $driver_address : "" ?></dd>
                 </dl>
             </fieldset>
-        
+            <!-- <div class="clear-fix my-2"></div> -->
             
         </div>
 
@@ -82,29 +82,37 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             </fieldset>
         </div>
     </div>
-    <!-- <div class="clear-fix my-2"></div> -->
     
-    
+    <!-- <div class="clear-fix my-3"></div> -->
     <div class="text-right">
-        
         <?php if(isset($status) && $status == 0): ?>
-        <button class="btn btn-danger btn-flat bg-gradient-danger" type="button" id="cancel_booking">Cancel Bookings</button>
+        <button class="btn btn-primary btn-flat bg-gradient-primary" type="button" id="confirm_booking">Confirm Booking</button>
+        <?php elseif(isset($status) && $status == 1): ?>
+        <button class="btn btn-warning btn-flat bg-gradient-warning" type="button" id="pickup_booking">Picked Up</button>
+        <?php elseif(isset($status) && $status == 2): ?>
+        <button class="btn btn-success btn-flat bg-gradient-success" type="button" id="dropoff_booking">Dropped Off</button>
         <?php endif; ?>
         <button class="btn btn-dark btn-flat bg-gradient-dark" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
     </div>
 </div>
 <script>
     $(function(){
-        $('#cancel_booking').click(function(){
-            _conf("Are you sure to cancel your cab booking [Ref. Code: <b><?= isset($ref_code) ? $ref_code : "" ?></b>]?", "cancel_booking",["<?= isset($id) ? $id : "" ?>"])
+        $('#confirm_booking').click(function(){
+            _conf("Are you sure to confirm this booking [Ref. Code: <b><?= isset($ref_code) ? $ref_code : "" ?></b>]?", "update_booking_status",["<?= isset($id) ? $id : "" ?>",1])
+        })
+        $('#pickup_booking').click(function(){
+            _conf("Mark [Ref. Code: <b><?= isset($ref_code) ? $ref_code : "" ?></b>] booking as Picked Up?", "update_booking_status",["<?= isset($id) ? $id : "" ?>",2])
+        }) 
+        $('#dropoff_booking').click(function(){
+            _conf("Mark [Ref. Code: <b><?= isset($ref_code) ? $ref_code : "" ?></b>] booking as Dropped Off?", "update_booking_status",["<?= isset($id) ? $id : "" ?>",3])
         })
     })
-    function cancel_booking($id){
+    function update_booking_status($id,$status){
         start_loader();
 		$.ajax({
 			url:_base_url_+"classes/Master.php?f=update_booking_status",
 			method:"POST",
-			data:{id: $id,status:4},
+			data:{id: $id,status:$status},
 			dataType:"json",
 			error:err=>{
 				console.log(err)

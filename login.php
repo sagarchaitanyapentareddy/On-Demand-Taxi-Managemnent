@@ -1,4 +1,4 @@
-<?php require_once('./../config.php') ?>
+<?php require_once('../config.php') ?>
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
  <?php require_once('inc/header.php') ?>
@@ -8,43 +8,38 @@
   </script>
   <style>
       body{
-          /* width:calc(100%);
+          width:calc(100%);
           height:calc(100%);
-          background-image:url('<?= validate_image($_settings->info('cover')) ?>');
+          background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('<?= validate_image($_settings->info('cover')) ?>');
           background-repeat: no-repeat;
-          background-size:cover; */
+          background-size:cover;  
       }
       #logo-img{
           /* width:15em;
           height:15em; */
           object-fit:scale-down;
-          object-position:center center;
+          object-position: center center;
       }
   </style>
 <div class="login-box">
-<?php $page = isset($_GET['page']) ? $_GET['page'] : 'home';  ?>
-     <?php if($_settings->chk_flashdata('success')): ?>
-      <script>
-        alert_toast("<?php echo $_settings->flashdata('success') ?>",'success')
-      </script>
-    <?php endif;?>
-  <!-- /.login-logo -->
-  <center><img src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo" id="logo-img"></center>
+<center><img src="<?= validate_image($_settings->info('logo')) ?>" alt="System Logo" class="img-thumbnail rounded-circle" id="logo-img"></center>
   <div class="clear-fix my-2"></div>
+  <!-- /.login-logo -->
   <div class="card card-outline card-purple">
     <div class="card-header text-center">
-      <a href="./" class="h4 text-decoration-none"><b>Driver Login Panel</b></a>
+      <a href="./" class="h4"><b>Admin Login Panel</b></a>
     </div>
     <div class="card-body">
-      
-      <form id="dlogin-frm" action="" method="post">
+     
+
+      <form id="login-frm" action="" method="post">
         <div class="input-group mb-3">
         <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
             </div>
           </div>
-          <input type="text" class="form-control" name="reg_code" placeholder="Reg.Code">
+          <input type="text" class="form-control" name="username" placeholder="Username">
           
         </div>
         <div class="input-group mb-3">
@@ -56,13 +51,13 @@
           <input type="password" class="form-control" name="password" placeholder="Password">
           
         </div>
-        <div class="row align-items-center">
+        <div class="row">
           <div class="col-8">
-            <a href="<?php echo base_url ?>" style="text-decoration:none;">Back</a>
+            <a href="<?php echo base_url ?>">Back</a>
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-success btn-sm btn-flat btn-block">Log In</button>
+            <button type="submit" class="btn btn-danger btn-flat btn-sm w-100">Log In</button>
           </div>
           <!-- /.col -->
         </div>

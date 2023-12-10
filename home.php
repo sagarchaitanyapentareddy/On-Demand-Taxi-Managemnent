@@ -1,82 +1,198 @@
-<div class="content py-5 mt-5">
-    <div class="container">
-        <div class="card card-outline card-purple shadow rounded-0">
-            <div class="card-header">
-                <h4 class="card-title">My Booking List</h4>
-            </div>
-            <div class="card-body">
-                <table class="table table-striped table-bordered table-hover">
-                    <colgroup>
-                        <col width="5%">
-                        <col width="15%">
-                        <col width="15%">
-                        <col width="30%">
-                        <col width="10%">
-                        <col width="15%">
-                    </colgroup>
-                    <thead>
-                    <tr class="bg-gradient-dark text-light">
-                            <th class="text-center">#</th>
-                            <th class="text-center">Date Booked</th>
-                            <th class="text-center">Ref. Code</th>
-                            <th class="text-center">Trip Details</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        $i = 1;
-                            $qry = $conn->query("SELECT * FROM `booking_list` where cab_id = '{$_settings->userdata('id')}' order by unix_timestamp(date_created) desc");
-                            while($row = $qry->fetch_assoc()):
-                        ?>
-                        <tr>
-                            <td class="text-center"><?= $i++; ?></td>
-                            <td><?= date("Y-m-d H:i", strtotime($row['date_created'])) ?></td>
-                            <td><?= $row['ref_code'] ?></td>
-                            <td>
-                                <p class="m-0 truncate-1"><b>Pickup:</b> <?= $row['pickup_zone'] ?></p>
-                                <p class="m-0 truncate-1"><b>Dropoff:</b> <?= $row['drop_zone'] ?></p>
-                            </td>
-                            <td class="text-center">
-                                <?php 
-                                    switch($row['status']){
-                                        case 0:
-                                            echo "<span class='badge badge-secondary bg-gradient-secondary px-3 rounded-pill'>Pending</span>";
-                                            break;
-                                        case 1:
-                                            echo "<span class='badge badge-primary bg-gradient-primary px-3 rounded-pill'>Driver Confirmed</span>";
-                                            break;
-                                        case 2:
-                                            echo "<span class='badge badge-warning bg-gradient-warning px-3 rounded-pill'>Picked-up</span>";
-                                            break;
-                                        case 3:
-                                            echo "<span class='badge badge-success bg-gradient-success px-3 rounded-pill'>Dropped off</span>";
-                                            break;
-                                        case 4:
-                                            echo "<span class='badge badge-danger bg-gradient-danger px-3 rounded-pill'>Cancelled</span>";
-                                            break;
-                                    }
-                                ?>
-                            </td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-flat btn-info border btn-sm view_data" data-id="<?= $row['id'] ?>">View Details</button>
-                            </td>
-                        </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            </div>  
-        </div>
-    </div>
-</div>
-<script>
-    $(function(){
-        $('table th, table td').addClass('px-2 py-1 align-middle')
-        $('table').dataTable();
+<h1 class=""><i class="fas fa-taxi"></i> <?php echo $_settings->info('name') ?></h1>
+<hr>
+<style>
+  #cover_img_dash{
+    width:100%;
+    max-height:50vh;
+    object-fit:cover;
+    object-position:bottom center;
+  }
+</style>
+<div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-gradient-purple elevation-1"><i class="fas fa-copyright"></i></span>
 
-        $('.view_data').click(function(){
-            uni_modal("Booking Details","view_booking.php?id="+$(this).attr('data-id'))
-        })
-    })
-</script>
+              <div class="info-box-content">
+                <span class="info-box-text">Categories</span>
+                <span class="info-box-number">
+                  <?php 
+                    $inv = $conn->query("SELECT count(id) as total FROM category_list where delete_flag = 0 ")->fetch_assoc()['total'];
+                    echo number_format($inv);
+                  ?>
+                  <?php ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-gradient-warning elevation-1"><i class="fas fa-taxi"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Available Cabs</span>
+                <span class="info-box-number">
+                  <?php 
+                    $inv = $conn->query("SELECT count(id) as total FROM cab_list where delete_flag = 0 ")->fetch_assoc()['total'];
+                    echo number_format($inv);
+                  ?>
+                  <?php ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="shadow info-box mb-3">
+              <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Registered Clients</span>
+                <span class="info-box-number">
+                  <?php 
+                    $mechanics = $conn->query("SELECT count(id) as total FROM `client_list` where delete_flag = 0 ")->fetch_assoc()['total'];
+                    echo number_format($mechanics);
+                  ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <div class="clearfix hidden-md-up"></div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-gradient-info elevation-1"><i class="fas fa-bookmark"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Bookings Made</span>
+                <span class="info-box-number">
+                  <?php 
+                    $inv = $conn->query("SELECT count(id) as total FROM booking_list ")->fetch_assoc()['total'];
+                    echo number_format($inv);
+                  ?>
+                  <?php ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+        </div>
+       
+
+
+        <div class="row">
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="shadow info-box mb-3">
+              <span class="info-box-icon bg-gradient-gray elevation-1"><i class="fas fa-spinner"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Pending Bookings</span>
+                <span class="info-box-number">
+                <?php 
+                    $services = $conn->query("SELECT count(id) as total FROM `booking_list` where status = 0 ")->fetch_assoc()['total'];
+                    echo number_format($services);
+                  ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="shadow info-box mb-3">
+              <span class="info-box-icon bg-gradient-red elevation-1"><i class="fas fa-times-circle"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Cancelled Bookings</span>
+                <span class="info-box-number">
+                <?php 
+                    $services = $conn->query("SELECT count(id) as total FROM `booking_list` where status = 4 ")->fetch_assoc()['total'];
+                    echo number_format($services);
+                  ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="shadow info-box mb-3">
+              <span class="info-box-icon bg-gradient-navy elevation-1"><i class="fas fa-road"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Ongoing Trips</span>
+                <span class="info-box-number">
+                <?php 
+                    $services = $conn->query("SELECT count(id) as total FROM `booking_list` where status = 2 ")->fetch_assoc()['total'];
+                    echo number_format($services);
+                  ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="shadow info-box mb-3">
+              <span class="info-box-icon bg-gradient-green elevation-1"><i class="fas fa-tasks"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Trips Completed</span>
+                <span class="info-box-number">
+                <?php 
+                    $services = $conn->query("SELECT count(id) as total FROM `booking_list` where status = 3 ")->fetch_assoc()['total'];
+                    echo number_format($services);
+                  ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+
+
+          
+        </div>
+
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="shadow info-box mb-3">
+              <span class="info-box-icon bg-gradient-maroon elevation-1"><i class="fas fa-users-cog"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">System Users</span>
+                <span class="info-box-number">
+                <?php 
+                    $services = $conn->query("SELECT count(id) as total FROM `users` ")->fetch_assoc()['total'];
+                    echo number_format($services);
+                  ?>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+        </div>
+
+        <hr>
+    <!-- <div class="text-center">
+      <img src="<?= validate_image($_settings->info('cover')) ?>" alt="System Cover" class="w-100 img-fluid img-thumnail border" id="cover_img_dash">
+    </div> -->
